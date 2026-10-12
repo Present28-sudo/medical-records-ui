@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MetroCare Clinic Locator</title>
+  <style>
+    :root {
+      --bg-main: #545454;
+      --card-bg: #011345;
+      --card-hover: #09539b;
+      --accent-blue: #cce0ff;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --header-btn-bg: #272f44;
+      --border-line: #2e374d;
+      --soft-panel: #d5e2de;
+      --soft-panel-text: #082e53;
+      --search-bg: #e7f1ff;
+      --clinic-card: #222a2f;
+      --dark-border: #454e53;
+      --success: #65d27b;
+      --danger: #ed5c5c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg-main);
+      color: var(--text-primary);
+    }
+
+    a { text-decoration: none; }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      width: 100%;
+      padding: 14px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    header img {
+      height: 120px;
+      width: 220px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .header-text h1 {
+      font-size: 22px;
+      margin: 0;
+      color: #fff;
+    }
+
+    .header-text p {
+      font-size: 12px;
+      margin: 0;
+      color: #dfe8f6;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      display: inline-block;
+      background: var(--header-btn-bg);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border-line);
+      font-size: 0.85rem;
+      transition: 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--card-hover);
+    }
+
+    main {
+      width: 90%;
+      max-width: 1050px;
+      margin: 30px auto;
+      flex: 1;
+    }
+
+    .page-title {
+      color: #fff;
+      font-size: 32px;
+      margin-bottom: 18px;
+    }
+
+    .location-status {
+      background: rgba(255,255,255,0.05);
+      color: #dfeaf8;
+      border-left: 3px solid #0872d5;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .loading {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .search-container {
+      position: relative;
+      margin: 18px 0 12px;
+    }
+
+    .search {
+      background: var(--search-bg);
+      color: #111;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+
+    .search input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 15px;
+      color: #111;
+    }
+
+    .search input::placeholder {
+      color: #51657d;
+    }
+
+    .search-suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--clinic-card);
+      border: 1px solid var(--border-line);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      display: none;
+      z-index: 10;
+    }
+
+    .search-suggestions.active {
+      display: block;
+    }
+
+    .suggestion-item {
+      padding: 12px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-line);
+      color: #fff;
+      transition: 0.2s ease;
+    }
+
+    .suggestion-item:hover,
+    .suggestion-item.highlighted {
+      background: var(--card-hover);
+    }
+
+    .suggestion-item-clinic {
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+
+    .suggestion-item-suburb {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #a9b8c9;
+    }
+
+    .map {
+      background: #4a4a4a;
+      border-radius: 12px;
+      border: 2px solid var(--border-line);
+      height: 420px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .map iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--border-line);
+      background: transparent;
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      background: var(--card-hover);
+    }
+
+    .filter-btn.active {
+      background: #0872d5;
+      border-color: #0872d5;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+
+    .section-header h3 {
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .clinic-count {
+      background: #0872d5;
+      color: #fff;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .clinics-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .clinic {
+      background: var(--clinic-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 10px;
+      padding: 18px 16px;
+      transition: 0.2s ease;
+    }
+
+    .clinic:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+    }
+
+    .clinic.featured {
+      border: 2px solid #0872d5;
+      background: linear-gradient(135deg, rgba(8,114,217,0.12) 0%, rgba(0,0,0,0.0) 100%);
+    }
+
+    .clinic-badge {
+      display: inline-block;
+      background: #0872d5;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .clinic h3 {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .clinic p {
+      color: #dde4e9;
+      font-size: 14px;
+      line-height: 1.55;
+      margin: 5px 0;
+    }
+
+    .clinic-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .distance-text {
+      color: var(--accent-blue);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .open { color: var(--success); font-weight: 700; }
+    .closed { color: var(--danger); font-weight: 700; }
+
+    .clinic-hours {
+      border-top: 1px solid var(--dark-border);
+      margin-top: 10px;
+      padding-top: 10px;
+      font-size: 12px;
+      color: #b5c1cb;
+    }
+
+    .button {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #0872d9;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 12px;
+      transition: 0.2s ease;
+    }
+
+    .button:hover {
+      background: #1565d8;
+    }
+
+    .load-more-button {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: var(--accent-blue);
+      border: 2px solid #0872d5;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .load-more-button:hover {
+      background: #0872d5;
+      color: #fff;
+    }
+
+    .hidden-clinics {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .hidden-clinics.visible {
+      display: grid;
+    }
+
+    .no-results {
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 28px;
+      text-align: center;
+      color: #bfd1e6;
+    }
+
+    .permission-message {
+      background: rgba(237, 92, 92, 0.1);
+      border-left: 3px solid #ed5c5c;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      color: #ff9999;
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 22px 18px;
+      text-align: center;
+      color: #dfe8f6;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 16px;
+        padding: 18px 18px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      main {
+        width: 95%;
+      }
+
+      .page-title {
+        font-size: 28px;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .map {
+        height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <img src="../images/1.png" alt="MetroCare logo" />
+      <div class="header-text">
+        <h1>MetroCare</h1>
+        <p>Medi Help</p>
+      </div>
+    </div>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-btn">Dashboard</a></li>
+        <li><a href="about.html" class="nav-btn">About Us</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="page-title">Find Nearest MetroCare Clinic</h1>
+
+    <p id="locationStatus" class="location-status loading">
+      📍 Requesting your location...
+    </p>
+
+    <div id="permissionMessage" class="permission-message" style="display:none;">
+      ⚠️ Location access denied. Please enable location permissions in your browser settings to find nearby clinics.
+    </div>
+
+    <div class="map">
+      <iframe id="googleMap" title="Map to nearby clinics" loading="lazy"></iframe>
+    </div>
+
+    <div class="search-container">
+      <div class="search">
+        <span>🔍</span>
+        <input id="searchInput" type="text" placeholder="Search by clinic name, suburb or area" />
+      </div>
+      <div id="searchSuggestions" class="search-suggestions"></div>
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">All Clinics</button>
+      <button class="filter-btn" data-filter="open">Open Now</button>
+      <button class="filter-btn" data-filter="nearest">Nearest First</button>
+    </div>
+
+    <div class="section-header">
+      <h3>Nearby Clinics</h3>
+      <div id="clinicCount" class="clinic-count">0 clinics</div>
+    </div>
+
+    <div id="clinicsList" class="clinics-list"></div>
+    <div id="hiddenClinics" class="hidden-clinics"></div>
+
+    <button id="loadMoreBtn" class="load-more-button" style="display:none;">
+      📍 Load More Clinics
+    </button>
+  </main>
+
+  <footer>
+    Privacy & Security &nbsp; | &nbsp; Help & Support &nbsp; | &nbsp; Log out
+  </footer>
+
+  <script>
+    const clinicsDatabase = [
+      {
+        id: 1,
+        name: "MetroCare Mobile Clinic - Pretoria Central",
+        address: "Cnr Church & Wessels Streets, Pretoria Central, 0002",
+        suburb: "Pretoria Central",
+        lat: -25.7461,
+        lng: 28.2293,
+        phone: "(012) 326-1234",
+        services: ["General Check-ups", "Vaccinations", "Minor Injuries"],
+        hours: {
+          monday: { open: "07:00", close: "19:00" },
+          tuesday: { open: "07:00", close: "19:00" },
+          wednesday: { open: "07:00", close: "19:00" },
+          thursday: { open: "07:00", close: "19:00" },
+          friday: { open: "07:00", close: "18:00" },
+          saturday: { open: "08:00", close: "15:00" },
+          sunday: { open: "09:00", close: "14:00" }
+        }
+      },
+      {
+        id: 2,
+        name: "MetroCare Mobile Clinic - Arcadia",
+        address: "370 Grosvenor Street, Arcadia, Pretoria, 0083",
+        suburb: "Arcadia",
+        lat: -25.7500,
+        lng: 28.2450,
+        phone: "(012) 460-5678",
+        services: ["General Check-ups", "Emergency Care", "Chronic Disease Management"],
+        hours: {
+          monday: { open: "07:30", close: "19:00" },
+          tuesday: { open: "07:30", close: "19:00" },
+          wednesday: { open: "07:30", close: "19:00" },
+          thursday: { open: "07:30", close: "19:00" },
+          friday: { open: "07:30", close: "18:00" },
+          saturday: { open: "08:00", close: "14:00" },
+          sunday: { open: "closed", close: "closed" }
+        }
+      },
+      {
+        id: 3,
+        name: "MetroCare Mobile Clinic - Brooklyn",
+        address: "123 Lynnwood Road, Brooklyn, Pretoria, 0181",
+        suburb: "Brooklyn",
+        lat: -25.7350,
+        lng: 28.2550,
+        phone: "(012) 563-1234",
+        services: ["General Check-ups", "Vaccinations", "Health Screening"],
+        hours: {
+          monday: { open: "08:00", close: "18:00" },
+          tuesday: { open: "08:00", close: "18:00" },
+          wednesday: { open: "08:00", close: "18:00" },
+          thursday: { open: "08:00", close: "18:00" },
+          friday: { open: "08:00", close: "17:00" },
+          saturday: { open: "09:00", close: "13:00" },
+          sunday: { open: "closed", close: "closed" }
+        }
+      },
+      {
+        id: 4,
+        name: "MetroCare Mobile Clinic - Hatfield",
+        address: "85 Burnett Street, Hatfield, Pretoria, 0083",
+        suburb: "Hatfield",
+        lat: -25.7600,
+        lng: 28.2150,
+        phone: "(012) 362-9876",
+        services: ["General Check-ups", "Youth Services", "Counseling"],
+        hours: {
+          monday: { open: "07:00", close: "19:00" },
+          tuesday: { open: "07:00", close: "19:00" },
+          wednesday: { open: "07:00", close: "19:00" },
+          thursday: { open: "07:00", close: "19:00" },
+          friday: { open: "07:00", close: "18:30" },
+          saturday: { open: "08:00", close: "15:00" },
+          sunday: { open: "09:00", close: "15:00" }
+        }
+      },
+      {
+        id: 5,
+        name: "MetroCare Mobile Clinic - Menlyn",
+        address: "312 Atterbury Road, Menlyn, Pretoria, 0181",
+        suburb: "Menlyn",
+        lat: -25.7800,
+        lng: 28.2800,
+        phone: "(012) 998-5432",
+        services: ["General Check-ups", "Minor Injuries", "Vaccinations"],
+        hours: {
+          monday: { open: "08:00", close: "18:00" },
+          tuesday: { open: "08:00", close: "18:00" },
+          wednesday: { open: "08:00", close: "18:00" },
+          thursday: { open: "08:00", close: "18:00" },
+          friday: { open: "08:00", close: "17:00" },
+          saturday: { open: "09:00", close: "14:00" },
+          sunday: { open: "closed", close: "closed" }
+        }
+      },
+      {
+        id: 6,
+        name: "MetroCare Mobile Clinic - Eastwood",
+        address: "456 Schoeman Street, Eastwood, Pretoria, 0001",
+        suburb: "Eastwood",
+        lat: -25.7400,
+        lng: 28.2700,
+        phone: "(012) 740-2341",
+        services: ["General Check-ups", "Emergency Care", "Wound Care"],
+        hours: {
+          monday: { open: "07:30", close: "19:30" },
+          tuesday: { open: "07:30", close: "19:30" },
+          wednesday: { open: "07:30", close: "19:30" },
+          thursday: { open: "07:30", close: "19:30" },
+          friday: { open: "07:30", close: "18:00" },
+          saturday: { open: "08:00", close: "16:00" },
+          sunday: { open: "09:00", close: "13:00" }
+        }
+      },
+      {
+        id: 7,
+        name: "MetroCare Mobile Clinic - Waterkloof",
+        address: "123 Cactus Street, Waterkloof, Pretoria, 0145",
+        suburb: "Waterkloof",
+        lat: -25.7100,
+        lng: 28.2400,
+        phone: "(012) 346-7890",
+        services: ["General Check-ups", "Health Screening", "Consultations"],
+        hours: {
+          monday: { open: "08:00", close: "17:30" },
+          tuesday: { open: "08:00", close: "17:30" },
+          wednesday: { open: "08:00", close: "17:30" },
+          thursday: { open: "08:00", close: "17:30" },
+          friday: { open: "08:00", close: "16:00" },
+          saturday: { open: "closed", close: "closed" },
+          sunday: { open: "closed", close: "closed" }
+        }
+      },
+      {
+        id: 8,
+        name: "MetroCare Mobile Clinic - Silverton",
+        address: "789 Thabo Mbeki Road, Silverton, Pretoria, 0127",
+        suburb: "Silverton",
+        lat: -25.7900,
+        lng: 28.2100,
+        phone: "(012) 803-1234",
+        services: ["General Check-ups", "Vaccinations", "Health Education"],
+        hours: {
+          monday: { open: "07:00", close: "18:00" },
+          tuesday: { open: "07:00", close: "18:00" },
+          wednesday: { open: "07:00", close: "18:00" },
+          thursday: { open: "07:00", close: "18:00" },
+          friday: { open: "07:00", close: "17:00" },
+          saturday: { open: "09:00", close: "14:00" },
+          sunday: { open: "10:00", close: "13:00" }
+        }
+      },
+      {
+        id: 9,
+        name: "MetroCare Mobile Clinic - Centurion",
+        address: "1000 Governors Road, Centurion, 0157",
+        suburb: "Centurion",
+        lat: -25.8700,
+        lng: 28.2200,
+        phone: "(012) 665-5555",
+        services: ["General Check-ups", "Corporate Health", "Preventive Care"],
+        hours: {
+          monday: { open: "07:00", close: "19:00" },
+          tuesday: { open: "07:00", close: "19:00" },
+          wednesday: { open: "07:00", close: "19:00" },
+          thursday: { open: "07:00", close: "19:00" },
+          friday: { open: "07:00", close: "18:00" },
+          saturday: { open: "08:00", close: "15:00" },
+          sunday: { open: "09:00", close: "15:00" }
+        }
+      },
+      {
+        id: 10,
+        name: "MetroCare Mobile Clinic - Midrand",
+        address: "2020 15th Avenue, Midrand, Johannesburg, 1685",
+        suburb: "Midrand",
+        lat: -25.9500,
+        lng: 28.1100,
+        phone: "(011) 315-6666",
+        services: ["General Check-ups", "Occupational Health", "Emergency Care"],
+        hours: {
+          monday: { open: "07:30", close: "19:00" },
+          tuesday: { open: "07:30", close: "19:00" },
+          wednesday: { open: "07:30", close: "19:00" },
+          thursday: { open: "07:30", close: "19:00" },
+          friday: { open: "07:30", close: "18:00" },
+          saturday: { open: "08:00", close: "14:00" },
+          sunday: { open: "closed", close: "closed" }
+        }
+      }
+    ];
+
+    let userLocation = null;
+    let currentFilter = "all";
+    let allFilteredClinics = [];
+    let highlightedSuggestion = -1;
+    let showingMore = false;
+    let locationRequestDenied = false;
+
+    function initMap() {
+      if (!userLocation) {
+        const map = document.getElementById("googleMap");
+        map.src = "https://www.google.com/maps?q=Pretoria,South%20Africa&output=embed";
+        return;
+      }
+
+      const map = document.getElementById("googleMap");
+      map.src = `https://www.google.com/maps?q=${userLocation.lat},${userLocation.lng}&output=embed`;
+    }
+
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return (R * c).toFixed(1);
+    }
+
+    function isClinicOpen(clinic) {
+      const now = new Date();
+      const dayName = now.toLocaleDateString("en-US", { weekday: "lowercase" });
+      const currentTime = now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
+      const hours = clinic.hours[dayName];
+
+      if (!hours || hours.open === "closed") return false;
+
+      return currentTime >= hours.open && currentTime <= hours.close;
+    }
+
+    function getTodayHours(clinic) {
+      const now = new Date();
+      const dayName = now.toLocaleDateString("en-US", { weekday: "lowercase" });
+      const hours = clinic.hours[dayName];
+      if (!hours || hours.open === "closed") return "Closed";
+      return `${hours.open} - ${hours.close}`;
+    }
+
+    function getUserLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          locationRequestDenied = true;
+          resolve(null);
+          return;
+        }
+
+        const timeoutId = setTimeout(() => {
+          locationRequestDenied = true;
+          document.getElementById("permissionMessage").style.display = "block";
+          resolve(null);
+        }, 8000);
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            clearTimeout(timeoutId);
+            userLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            resolve(userLocation);
+          },
+          (error) => {
+            clearTimeout(timeoutId);
+            locationRequestDenied = true;
+            document.getElementById("permissionMessage").style.display = "block";
+            resolve(null);
+          },
+          { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 }
+        );
+      });
+    }
+
+    function updateLocationStatus() {
+      const status = document.getElementById("locationStatus");
+      status.classList.remove("loading");
+
+      if (userLocation) {
+        status.innerHTML = `📍 Your location: ${userLocation.lat.toFixed(4)}°, ${userLocation.lng.toFixed(4)}° | Finding nearest clinics...`;
+      } else if (locationRequestDenied) {
+        status.innerHTML = `📍 Location access denied. Showing all available MetroCare clinics. Enable location in your browser to see nearby clinics.`;
+      } else {
+        status.innerHTML = `📍 Unable to detect location. Showing all available MetroCare clinics.`;
+      }
+    }
+
+    function createClinicCard(clinic, distance, isTop) {
+      const openNow = isClinicOpen(clinic);
+      return `
+        <div class="clinic ${isTop ? "featured" : ""}">
+          ${isTop && distance ? '<div class="clinic-badge">⭐ CLOSEST</div>' : ""}
+          <h3>${clinic.name}</h3>
+          <p>📍 ${clinic.address}</p>
+          <p>${clinic.suburb}</p>
+          <p>📞 ${clinic.phone}</p>
+
+          <div class="clinic-info">
+            <div class="distance-text">${distance ? distance + ' km away' : 'Distance unavailable'}</div>
+            <div class="${openNow ? "open" : "closed"}">${openNow ? "● Open Now" : "● Closed"}</div>
+          </div>
+
+          <div class="clinic-hours">
+            <strong>Today's Hours:</strong> ${getTodayHours(clinic)}
+          </div>
+
+          <div style="margin-top: 8px;">
+            <strong>Services:</strong> ${clinic.services.join(", ")}
+          </div>
+
+          <button class="button" onclick="getDirections(${clinic.lat}, ${clinic.lng}, '${clinic.name}')">
+            📍 Get Directions
+          </button>
+        </div>
+      `;
+    }
+
+    function getDirections(lat, lng, name) {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      window.open(url, "_blank");
+    }
+
+    function renderClinics(searchTerm = "") {
+      const clinicsList = document.getElementById("clinicsList");
+      const hiddenClinics = document.getElementById("hiddenClinics");
+      const loadMoreBtn = document.getElementById("loadMoreBtn");
+      const clinicCount = document.getElementById("clinicCount");
+
+      let filtered = clinicsDatabase.filter((clinic) => {
+        const q = searchTerm.toLowerCase();
+        const matches =
+          clinic.name.toLowerCase().includes(q) ||
+          clinic.address.toLowerCase().includes(q) ||
+          clinic.suburb.toLowerCase().includes(q);
+
+        if (!matches) return false;
+
+        if (currentFilter === "open") {
+          return isClinicOpen(clinic);
+        }
+
+        return true;
+      });
+
+      if (currentFilter === "nearest" && userLocation) {
+        filtered.sort((a, b) => {
+          const da = Number(calculateDistance(userLocation.lat, userLocation.lng, a.lat, a.lng));
+          const db = Number(calculateDistance(userLocation.lat, userLocation.lng, b.lat, b.lng));
+          return da - db;
+        });
+      } else {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      allFilteredClinics = filtered;
+      showingMore = false;
+
+      if (filtered.length === 0) {
+        clinicsList.innerHTML = `<div class="no-results">No clinics found matching your criteria.</div>`;
+        hiddenClinics.innerHTML = "";
+        hiddenClinics.classList.remove("visible");
+        loadMoreBtn.style.display = "none";
+        clinicCount.textContent = "0 clinics";
+        return;
+      }
+
+      clinicCount.textContent = `${filtered.length} clinic${filtered.length > 1 ? "s" : ""}`;
+
+      const topThree = filtered.slice(0, 3);
+      const remaining = filtered.slice(3);
+
+      clinicsList.innerHTML = topThree.map((clinic) => {
+        const distance = userLocation 
+          ? calculateDistance(userLocation.lat, userLocation.lng, clinic.lat, clinic.lng) 
+          : null;
+        return createClinicCard(clinic, distance, true);
+      }).join("");
+
+      if (remaining.length > 0) {
+        hiddenClinics.innerHTML = remaining.map((clinic) => {
+          const distance = userLocation 
+            ? calculateDistance(userLocation.lat, userLocation.lng, clinic.lat, clinic.lng) 
+            : null;
+          return createClinicCard(clinic, distance, false);
+        }).join("");
+        loadMoreBtn.textContent = `📍 Load More Clinics (${remaining.length} more)`;
+        loadMoreBtn.style.display = "block";
+      } else {
+        hiddenClinics.innerHTML = "";
+        loadMoreBtn.style.display = "none";
+      }
+    }
+
+    function generateSuggestions(searchTerm) {
+      const container = document.getElementById("searchSuggestions");
+      if (!searchTerm.trim()) {
+        container.classList.remove("active");
+        container.innerHTML = "";
+        return;
+      }
+
+      const q = searchTerm.toLowerCase();
+      const matches = [];
+
+      clinicsDatabase.forEach((clinic) => {
+        if (
+          clinic.name.toLowerCase().includes(q) ||
+          clinic.suburb.toLowerCase().includes(q) ||
+          clinic.address.toLowerCase().includes(q)
+        ) {
+          matches.push({ clinic, label: clinic.name, suburb: clinic.suburb });
+        }
+      });
+
+      if (matches.length === 0) {
+        container.innerHTML = '<div class="suggestion-item">No matches found</div>';
+        container.classList.add("active");
+        return;
+      }
+
+      container.innerHTML = matches.slice(0, 8).map((m, index) => `
+        <div class="suggestion-item" data-index="${index}">
+          <div class="suggestion-item-clinic">${m.label}</div>
+          <div class="suggestion-item-suburb">${m.suburb}</div>
+        </div>
+      `).join("");
+
+      container.classList.add("active");
+      highlightedSuggestion = -1;
+    }
+
+    function selectSuggestion(text) {
+      document.getElementById("searchInput").value = text;
+      document.getElementById("searchSuggestions").classList.remove("active");
+      renderClinics(text);
+    }
+
+    function updateHighlightedSuggestion(list) {
+      list.forEach((item, idx) => {
+        item.classList.toggle("highlighted", idx === highlightedSuggestion);
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      generateSuggestions(e.target.value);
+    });
+
+    document.getElementById("searchInput").addEventListener("keydown", (e) => {
+      const items = document.querySelectorAll(".suggestion-item");
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        highlightedSuggestion = Math.min(highlightedSuggestion + 1, items.length - 1);
+        updateHighlightedSuggestion(items);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        highlightedSuggestion = Math.max(highlightedSuggestion - 1, -1);
+        updateHighlightedSuggestion(items);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (highlightedSuggestion >= 0 && items.length) {
+          const item = items[highlightedSuggestion];
+          const text = item.querySelector(".suggestion-item-clinic").textContent;
+          selectSuggestion(text);
+        } else {
+          renderClinics(e.target.value);
+        }
+      }
+    });
+
+    document.getElementById("searchSuggestions").addEventListener("click", (e) => {
+      const item = e.target.closest(".suggestion-item");
+      if (!item) return;
+      const text = item.querySelector(".suggestion-item-clinic").textContent;
+      selectSuggestion(text);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-container")) {
+        document.getElementById("searchSuggestions").classList.remove("active");
+      }
+    });
+
+    document.getElementById("loadMoreBtn").addEventListener("click", () => {
+      const hiddenEl = document.getElementById("hiddenClinics");
+      if (!showingMore) {
+        hiddenEl.classList.add("visible");
+        document.getElementById("loadMoreBtn").textContent = "📍 Show Less";
+      } else {
+        hiddenEl.classList.remove("visible");
+        document.getElementById("loadMoreBtn").textContent = `📍 Load More Clinics (${allFilteredClinics.slice(3).length} more)`;
+      }
+      showingMore = !showingMore;
+    });
+
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderClinics(document.getElementById("searchInput").value);
+      });
+    });
+
+    async function init() {
+      await getUserLocation();
+      updateLocationStatus();
+      initMap();
+      renderClinics();
+    }
+
+    init();
+  </script>
+</body>
+</html>
