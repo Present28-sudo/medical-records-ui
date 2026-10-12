@@ -19,7 +19,6 @@
       color: #E5E7EB;
     }
 
-    /* Status Bar */
     .status-bar {
       background-color: #0F172A;
       padding: 8px 18px;
@@ -43,7 +42,6 @@
       opacity: 0.9;
     }
 
-    /* Top Navigation */
     .top-nav {
       background-color: #0F172A;
       padding: 8px 16px 12px;
@@ -76,7 +74,6 @@
       background-color: rgba(59, 130, 246, 0.2);
     }
 
-    /* Header */
     header {
       background: linear-gradient(135deg, #1E3A8A 0%, #1e40af 100%);
       padding: 16px 16px 14px;
@@ -177,7 +174,6 @@
       font-size: 15px;
     }
 
-    /* Encryption Banner */
     .banner {
       background-color: #0B1220;
       border-top: 1px solid rgba(148, 163, 184, 0.18);
@@ -195,7 +191,6 @@
       font-size: 14px;
     }
 
-    /* Main Layout */
     main {
       display: flex;
       gap: 18px;
@@ -206,7 +201,6 @@
       overflow: hidden;
     }
 
-    /* Records Section */
     .records-section {
       flex: 1.2;
       background-color: #0B1220;
@@ -283,7 +277,6 @@
       transform: scale(0.95);
     }
 
-    /* Records List */
     .records-list {
       display: flex;
       flex-direction: column;
@@ -310,7 +303,6 @@
       background: rgba(148, 163, 184, 0.5);
     }
 
-    /* Record Card */
     .record-card {
       background-color: #1F2937;
       border: 1px solid rgba(148, 163, 184, 0.18);
@@ -401,7 +393,6 @@
       transform: scale(0.96);
     }
 
-    /* Share Panel */
     .share-panel {
       width: 360px;
       background-color: #172033;
@@ -467,7 +458,6 @@
       background-color: rgba(59, 130, 246, 0.2);
     }
 
-    /* Search Box */
     .search-box {
       display: flex;
       align-items: center;
@@ -497,7 +487,6 @@
       color: #94A3B8;
     }
 
-    /* Doctor Card */
     .doctor-card {
       display: flex;
       gap: 12px;
@@ -549,14 +538,12 @@
       font-weight: 500;
     }
 
-    /* Section Divider */
     .section-divider {
       border: none;
       border-top: 1px solid rgba(148, 163, 184, 0.18);
       margin: 14px 0;
     }
 
-    /* Permissions Section */
     .permissions-section h4,
     .expiry-section h4 {
       color: #FFFFFF;
@@ -572,7 +559,6 @@
       margin-bottom: 12px;
     }
 
-    /* Toggle Group */
     .toggle-group {
       background-color: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(148, 163, 184, 0.18);
@@ -594,7 +580,6 @@
       border-bottom: 1px solid rgba(148, 163, 184, 0.1);
     }
 
-    /* Toggle Switch */
     .switch {
       position: relative;
       display: inline-block;
@@ -643,7 +628,6 @@
       transform: translateX(18px);
     }
 
-    /* Expiry Section */
     .expiry-section {
       margin: 18px 0;
     }
@@ -672,7 +656,6 @@
       background-color: rgba(59, 130, 246, 0.1);
     }
 
-    /* Submit Button */
     .submit-btn {
       width: 100%;
       display: flex;
@@ -700,7 +683,6 @@
       transform: scale(0.98);
     }
 
-    /* Panel Footer */
     .panel-footer {
       display: flex;
       align-items: center;
@@ -717,7 +699,6 @@
       flex-shrink: 0;
     }
 
-    /* Footer */
     footer {
       background-color: #0B1220;
       border-top: 1px solid rgba(148, 163, 184, 0.18);
@@ -762,7 +743,6 @@
       font-size: 12px;
     }
 
-    /* Bottom Bar */
     .bottom-bar {
       display: flex;
       gap: 12px;
@@ -771,7 +751,7 @@
       padding: 12px 16px;
     }
 
-    .bottom-btn {
+    .bottom-bar-button {
       flex: 1;
       display: flex;
       align-items: center;
@@ -779,8 +759,8 @@
       gap: 8px;
       padding: 11px;
       border-radius: 12px;
-      background-color: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(148, 163, 184, 0.18);
+      background-color: rgba(255,255,255,0.04);
+      border: 1px solid rgba(148,163,184,0.18);
       color: #FFFFFF;
       font-size: 13px;
       font-weight: 700;
@@ -788,17 +768,16 @@
       transition: all 0.2s ease;
     }
 
-    .bottom-btn:hover {
-      background-color: rgba(255, 255, 255, 0.08);
-      border-color: rgba(148, 163, 184, 0.25);
+    .bottom-bar-button:hover {
+      background-color: rgba(255,255,255,0.08);
+      border-color: rgba(148,163,184,0.25);
     }
 
-    .bottom-btn:active {
-      background-color: rgba(59, 130, 246, 0.12);
+    .bottom-bar-button:active {
+      background-color: rgba(59,130,246,0.12);
       transform: scale(0.96);
     }
 
-    /* Responsive */
     @media (max-width: 1024px) {
       main {
         gap: 12px;
@@ -878,18 +857,15 @@
   </style>
 </head>
 <body>
-  <!-- Status Bar -->
   <div class="status-bar">
     <span class="time">19:48</span>
     <span class="carrier">Matebele</span>
   </div>
 
-  <!-- Top Navigation -->
   <div class="top-nav">
     <button class="close-btn-top"><i class="fa-solid fa-xmark"></i></button>
   </div>
 
-  <!-- Header -->
   <header>
     <div class="brand-container">
       <div class="logo">
@@ -908,15 +884,12 @@
     </div>
   </header>
 
-  <!-- Encryption Banner -->
   <div class="banner">
     <i class="fa-solid fa-shield-halved"></i>
     <span>Your privacy is our priority. We use aff-standard encryption to keep your records safe.</span>
   </div>
 
-  <!-- Main Container -->
   <main>
-    <!-- Left Column: Records List -->
     <section class="records-section">
       <div class="records-header">
         <div>
@@ -930,13 +903,12 @@
       </div>
 
       <div class="records-list">
-        <!-- Record Card 1: Lab Results -->
         <div class="record-card">
           <div class="card-icon"><i class="fa-solid fa-flask"></i></div>
           <div class="card-details">
             <h4>Lab Results</h4>
-            <div class="card-meta">May 16, 2024 • Dr. Ananya Sharma</div>
-            <div class="card-subtext">Blood Test Report • Metropolis Labs</div>
+            <div class="card-meta">May 16, 2024 • Dr. Aisha Naidoo</div>
+            <div class="card-subtext">Blood Test Report • Metropolis Labs, Pretoria</div>
           </div>
           <div class="card-actions">
             <button class="action-btn"><i class="fa-regular fa-eye"></i> View</button>
@@ -944,12 +916,11 @@
           </div>
         </div>
 
-        <!-- Record Card 2: Prescriptions -->
         <div class="record-card">
           <div class="card-icon"><i class="fa-solid fa-pills"></i></div>
           <div class="card-details">
             <h4>Prescriptions</h4>
-            <div class="card-meta">May 10, 2024 • Dr. Rajiv Mehta</div>
+            <div class="card-meta">May 10, 2024 • Dr. Sipho Mokoena</div>
             <div class="card-subtext">Amoxicillin 500mg • 1 capsule, twice daily for 5 days</div>
           </div>
           <div class="card-actions">
@@ -958,12 +929,11 @@
           </div>
         </div>
 
-        <!-- Record Card 3: Visit Notes -->
         <div class="record-card">
           <div class="card-icon"><i class="fa-regular fa-file-lines"></i></div>
           <div class="card-details">
             <h4>Visit Notes</h4>
-            <div class="card-meta">May 7, 2024 • Dr. Neha Iyer</div>
+            <div class="card-meta">May 7, 2024 • Dr. Priya Ndlovu</div>
             <div class="card-subtext">General Consultation • Fever, Cough</div>
           </div>
           <div class="card-actions">
@@ -972,13 +942,12 @@
           </div>
         </div>
 
-        <!-- Record Card 4: Imaging -->
         <div class="record-card">
           <div class="card-icon"><i class="fa-regular fa-image"></i></div>
           <div class="card-details">
             <h4>Imaging</h4>
-            <div class="card-meta">April 28, 2024 • Dr. Vikram Rao</div>
-            <div class="card-subtext">Chest X-Ray • Apollo Imaging Center</div>
+            <div class="card-meta">April 28, 2024 • Dr. Lukas van der Merwe</div>
+            <div class="card-subtext">Chest X-Ray • Apollo Imaging Center, Pretoria</div>
           </div>
           <div class="card-actions">
             <button class="action-btn"><i class="fa-regular fa-eye"></i> View</button>
@@ -988,7 +957,6 @@
       </div>
     </section>
 
-    <!-- Right Column: Share Panel -->
     <aside class="share-panel">
       <div class="panel-header">
         <h3>Share Medical Records</h3>
@@ -1004,11 +972,11 @@
       <div class="doctor-card">
         <div class="doctor-avatar"><i class="fa-solid fa-user"></i></div>
         <div class="doctor-info">
-          <h5>Dr. Ananya Sharma</h5>
+          <h5>Dr. Aisha Naidoo</h5>
           <p>General Physician</p>
           <div class="doctor-location">
             <i class="fa-solid fa-location-dot"></i>
-            <span>MetroCare Clinic, Bengaluru</span>
+            <span>MetroCare Clinic, Pretoria</span>
           </div>
         </div>
       </div>
@@ -1071,7 +1039,6 @@
     </aside>
   </main>
 
-  <!-- Footer -->
   <footer>
     <div class="footer-content">
       <p>Your privacy is our priority. We use aff-standard encryption to keep your records safe.</p>
@@ -1083,13 +1050,12 @@
     </div>
   </footer>
 
-  <!-- Bottom Bar -->
   <div class="bottom-bar">
-    <button class="bottom-btn">
+    <button class="bottom-bar-button">
       <i class="fa-solid fa-download"></i>
       Download
     </button>
-    <button class="bottom-btn">
+    <button class="bottom-bar-button">
       <i class="fa-solid fa-share-nodes"></i>
       Share
     </button>
